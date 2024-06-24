@@ -69,6 +69,7 @@ class GoldScreen extends StatelessWidget {
       await Future<void>.delayed(const Duration(seconds: 2));
 
       currentPrice += (0.75 - (Random().nextDouble()));
+      currentPrice -= (0.75 - (Random().nextDouble()));
       yield currentPrice;
     }
   }
