@@ -1,14 +1,14 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class GoldScreen extends StatelessWidget {
   const GoldScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    /// Platzhalter für den Goldpreis
-    /// soll durch den Stream `getGoldPriceStream()` ersetzt werden
-    const double goldPrice = 69.22;
-
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -21,14 +21,28 @@ class GoldScreen extends StatelessWidget {
               Text('Live Kurs:',
                   style: Theme.of(context).textTheme.headlineMedium),
               const SizedBox(height: 20),
-              // TODO: Verwende einen StreamBuilder, um den Goldpreis live anzuzeigen
-              // statt des konstanten Platzhalters
-              Text(
-                NumberFormat.simpleCurrency(locale: 'de_DE').format(goldPrice),
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineLarge!
-                    .copyWith(color: Theme.of(context).colorScheme.primary),
+              StreamBuilder<double>(
+                stream: getGoldPriceStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Fehler: ${snapshot.error}',
+                        style: const TextStyle(color: Colors.red));
+                  } else if (snapshot.hasData) {
+                    return Text(
+                      NumberFormat.simpleCurrency(locale: 'de_DE')
+                          .format(snapshot.data),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineLarge!
+                          .copyWith(
+                              color: Theme.of(context).colorScheme.primary),
+                    );
+                  } else {
+                    return const Text('Keine Daten verfügbar');
+                  }
+                },
               ),
             ],
           ),
@@ -47,5 +61,17 @@ class GoldScreen extends StatelessWidget {
         Text('Gold', style: Theme.of(context).textTheme.headlineLarge),
       ],
     );
+  }
+
+  // Mock function to simulate getting a stream of changing gold prices
+  Stream<double> getGoldPriceStream() async* {
+    double currentPrice = 69.22;
+    while (true) {
+      await Future<void>.delayed(const Duration(seconds: 2));
+      // Simulate a change in gold price
+      currentPrice += (0.5 -
+          (Random().nextDouble())); // Random change between -0.5 and +0.5
+      yield currentPrice;
+    }
   }
 }
