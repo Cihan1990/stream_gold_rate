@@ -63,14 +63,12 @@ class GoldScreen extends StatelessWidget {
     );
   }
 
-  // Mock function to simulate getting a stream of changing gold prices
   Stream<double> getGoldPriceStream() async* {
     double currentPrice = 69.22;
     while (true) {
       await Future<void>.delayed(const Duration(seconds: 2));
-      // Simulate a change in gold price
-      currentPrice += (0.5 -
-          (Random().nextDouble())); // Random change between -0.5 and +0.5
+
+      currentPrice += (0.75 - (Random().nextDouble()));
       yield currentPrice;
     }
   }
