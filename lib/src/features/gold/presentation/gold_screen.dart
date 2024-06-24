@@ -1,8 +1,6 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:stream_gold_rate/src/features/gold/data/fake_gold_api.dart';
 
 class GoldScreen extends StatelessWidget {
   const GoldScreen({super.key});
@@ -61,16 +59,5 @@ class GoldScreen extends StatelessWidget {
         Text('Gold', style: Theme.of(context).textTheme.headlineLarge),
       ],
     );
-  }
-
-  Stream<double> getGoldPriceStream() async* {
-    double currentPrice = 69.22;
-    while (true) {
-      await Future<void>.delayed(const Duration(seconds: 2));
-
-      currentPrice += (0.75 - (Random().nextDouble()));
-      currentPrice -= (0.75 - (Random().nextDouble()));
-      yield currentPrice;
-    }
   }
 }
